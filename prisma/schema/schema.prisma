@@ -1,0 +1,21 @@
+// Генератор клиента для приложения
+generator client {
+  provider      = "prisma-client"
+  features      = ["prismaSchemaFolder"]
+  output        = "./../../src/persistence/generated/client"
+  binaryTargets = ["native"]
+}
+
+// Генератор нормальных интерфейсов моделей
+generator models {
+  provider    = "prisma-generator-typescript-interfaces"
+  output      = "./../../src/persistence/generated/models.ts"
+  modelSuffix = "Model"
+  enumType    = "object"
+  prettier    = true
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}

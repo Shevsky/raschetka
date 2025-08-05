@@ -1,0 +1,17 @@
+model QueuedMessage {
+  id           Int                      @id @default(autoincrement())
+  // Кому отправить сообщение
+  recipient    User                     @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+  recipientId  String
+  // Само сообщение в свободном формате
+  data         String
+  // Провайдер через который нужно отправить сообщение
+  provider     ExternalAccountProvider?
+  // Какой-то идентификатор существующего сообщения, которое надо подменить (если не указано, то будет новое сообщение)
+  messageId    String?
+  chatId       String?
+  // Когда нужно отправить сообщение (по умолчанию сразу же)
+  shouldSendAt DateTime                 @default(now())
+  // Временная метка если сообщение было отправлено
+  sentAt       DateTime?
+}

@@ -1,0 +1,24 @@
+model ExternalAccount {
+  // Провайдер и его идентификатор во внешней системе
+  provider   ExternalAccountProvider
+  providerId String
+  // Связь с пользователем в нашей системе
+  user       User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  // Логин во внешней системе
+  login      String?
+  // Поля: имя, отчество, фамилия
+  firstName  String?
+  secondName String?
+  lastName   String?
+  // Аватарка (путь во внутреннем хранилище)
+  userpic    String?
+
+  @@id([provider, providerId], name: "id")
+  @@unique([userId, provider], name: "account")
+}
+
+enum ExternalAccountProvider {
+  TELEGRAM
+  VK
+}

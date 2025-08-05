@@ -1,0 +1,106 @@
+model Check {
+  id                   String                  @id @default(uuid())
+  user                 User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId               String
+  // Дата транзакции
+  transactionAt        DateTime
+  // Всякие айдишники фискальника
+  fiscalDocumentNumber String
+  fiscalDriveNumber    String
+  fiscalSign           String
+  kktRegId             String
+  // Даты создания и обновления чека
+  createdAt            DateTime                @default(now())
+  updatedAt            DateTime                @updatedAt
+  completedAt          DateTime?
+  // Статус чека
+  status               CheckStatus             @default(DRAFT)
+  // Признак того что чек был создан из нескольких (количество исходных чеков)
+  parentChecksCount    Int                     @default(1)
+  // Группа (когда нужно смержить несколько чеков)
+  group                CheckGroup?             @relation(fields: [groupId], references: [id], onDelete: SetNull)
+  groupId              String?
+  // Заголовок текста и какой-то общий комментарий
+  title                String                  @default("")
+  comment              String                  @default("")
+  // Информация о компании
+  companyName          String                  @default("")
+  companyTaxCode       String                  @default("")
+  // Информация о месте
+  retailPlaceName      String                  @default("")
+  retailPlaceAddress   String                  @default("")
+  // Сумма чаевых
+  tipsSum              Int                     @default(0)
+  // Сумма товаров в чеке
+  itemsSum             Int
+  // Общая сумма чека (товары + чаевые)
+  totalSum             Int
+  // Товары в чеке
+  items                CheckItem[]
+  // Группы товаров в чеке
+  itemGroups           CheckItemGroup[]
+  // Участники в разбивке чека
+  participants         CheckParticipant[]
+  // Отправленная коммуникация по созданному чеку
+  sentCommunication    CheckSentCommunication?
+
+  @@unique([userId, fiscalDocumentNumber, fiscalDriveNumber, fiscalSign, kktRegId], name: "fiscal")
+}
+
+model CheckSentCommunication {
+  check     Check                   @relation(fields: [checkId], references: [id], onDelete: Cascade)
+  checkId   String                  @unique
+  provider  ExternalAccountProvider
+  messageId String
+  chatId    String?
+}
+
+model CheckGroup {
+  id     String  @id @default(uuid())
+  checks Check[]
+}
+
+model CheckParticipant {
+  id         String           @id @default(uuid())
+  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  check      Check            @relation(fields: [checkId], references: [id], onDelete: Cascade)
+  checkId    String
+  filled     Boolean          @default(false)
+  items      CheckItem[]      @relation()
+  itemGroups CheckItemGroup[]
+
+  @@unique([userId, checkId], name: "single")
+}
+
+model CheckItem {
+  id            String            @id @default(uuid())
+  index         Int
+  name          String
+  emoji         String
+  price         Int
+  quantity      Float
+  sum           Int
+  check         Check             @relation(fields: [checkId], references: [id], onDelete: Cascade)
+  checkId       String
+  group         CheckItemGroup?   @relation(fields: [groupId], references: [id], onDelete: SetNull)
+  groupId       String?
+  participant   CheckParticipant? @relation(fields: [participantId], references: [id], onDelete: SetNull)
+  participantId String?
+}
+
+model CheckItemGroup {
+  id           String             @id @default(uuid())
+  name         String
+  check        Check?             @relation(fields: [checkId], references: [id], onDelete: Cascade)
+  checkId      String?
+  items        CheckItem[]
+  participants CheckParticipant[]
+}
+
+enum CheckStatus {
+  DRAFT
+  ACTIVE
+  COMPLETED
+  ARCHIVE
+}

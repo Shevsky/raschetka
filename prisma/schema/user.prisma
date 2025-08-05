@@ -1,0 +1,43 @@
+model User {
+  id                   String             @id @default(uuid())
+  name                 String
+  permissions          Permission[]
+  mention              String?
+  // Дата регистрации пользователя
+  createdAt            DateTime           @default(now())
+  // Привязанные внешние аккаунты
+  accounts             ExternalAccount[]
+  // Пол (может отсутствовать если не смогли определить автоматически)
+  gender               Gender?
+  // Информация о том кто пригласил пользователя в бот
+  inviterId            String?
+  inviter              User?              @relation("invitedUsers", fields: [inviterId], references: [id])
+  // И о том кого пригласил этот пользователь
+  invitedUsers         User[]             @relation("invitedUsers")
+  // Связи с другими пользователями-друзьями
+  friendshipsFrom      Friendship[]       @relation("fromUser")
+  friendshipsTo        Friendship[]       @relation("toUser")
+  // Созданные чеки и участия в других чеках
+  checks               Check[]
+  checksParticipations CheckParticipant[]
+  // Очередь сообщений, которые должны быть отправлены этому пользователю
+  queuedMessages       QueuedMessage[]
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum Permission {
+  // Можно ли смотреть все чеки (по умолчанию доступ есть только к созданным и к те, на которые назначили)
+  SEE_CHECKS
+  // Можно ли создавать новые чеки
+  CREATE_CHECKS
+  // Можно ли просматривать список всех пользователей (по умолчанию доступ есть только к друзьям)
+  SEE_USERS
+  // Можно ли редактировать пользователей (выдавать эти же пермишены другим)
+  EDIT_USERS
+  // Можно ли читать логи прямо из бота
+  SEE_LOGS
+}
