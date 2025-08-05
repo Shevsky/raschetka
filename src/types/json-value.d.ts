@@ -1,0 +1,1 @@
+declare type JSONValue = string | number | boolean | null | { [key: string]: JSONValue } | Array<JSONValue>;
