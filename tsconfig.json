@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "allowUnusedLabels": true,
+    "downlevelIteration": true,
+    "declaration": false,
+    "emitDecoratorMetadata": false,
+    "esModuleInterop": true,
+    "experimentalDecorators": false,
+    "forceConsistentCasingInFileNames": false,
+    "importHelpers": true,
+    "jsx": "react-jsx",
+    "lib": [
+      "dom",
+      "es2021",
+      "es2022",
+      "es2023",
+      "es2024",
+      "esnext"
+    ],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "noEmitHelpers": true,
+    "noImplicitAny": false,
+    "noUnusedLocals": false,
+    "paths": {
+      "~/*": [
+        "src/*"
+      ]
+    },
+    "removeComments": false,
+    "resolveJsonModule": true,
+    "rootDir": "src",
+    "skipLibCheck": true,
+    "sourceMap": false,
+    "strict": true,
+    "target": "es2022"
+  },
+  "include": [
+    "src"
+  ]
+}

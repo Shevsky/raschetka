@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+    <title>Расчётка</title>
+    <script>
+      {
+        let bgColor = 'inherit';
+        let textColor = 'inherit';
+
+        try {
+          const params = new URLSearchParams(location.hash.substring(1));
+          const theme = JSON.parse(params.get('tgWebAppThemeParams'));
+
+          bgColor = theme.bg_color;
+          textColor = theme.text_color;
+        } catch (_) {}
+
+        const style = document.createElement('style');
+        style.textContent = `html, body { color: var(--tg-theme-text-color, ${textColor}); background-color: var(--tg-theme-bg-color, ${bgColor}) }`;
+        document.head.appendChild(style);
+      }
+    </script>
+    <style>
+      html, body {
+        height: 100%;
+        overflow: hidden;
+      }
+
+      #root {
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="/src/web/index.tsx" type="module"></script>
+  </body>
+</html>

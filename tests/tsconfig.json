@@ -1,0 +1,29 @@
+{
+  "extends": "./../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "paths": {
+      "~/tests/*": [
+        "./../tests/*"
+      ],
+      "~/*": [
+        "./../src/*"
+      ]
+    },
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules/vitest/globals.d.ts"
+    ],
+    "types": [
+      "node",
+      "vitest/globals"
+    ]
+  },
+  "include": [
+    "./global.d.ts",
+    "./**/*.tsx",
+    "./**/*.ts"
+  ]
+}

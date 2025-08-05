@@ -1,0 +1,12 @@
+{
+  "printWidth": 140,
+  "parser": "typescript",
+  "useTabs": false,
+  "singleQuote": true,
+  "trailingComma": "none",
+  "arrowParens": "always",
+  "sortingMethod": "alphabetical",
+  "plugins": [
+    "./node_modules/prettier-plugin-sort-imports/dist/index.js"
+  ]
+}
