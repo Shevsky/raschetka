@@ -1,0 +1,65 @@
+name: raschetka
+
+services:
+  pg:
+    container_name: raschetka_pg
+    image: postgres:15-alpine
+    restart: always
+    env_file: .env.production
+    ports:
+      - "5433:5432"
+    logging:
+      driver: none
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5m
+      timeout: 3s
+      retries: 2
+      start_period: 30s
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  shadowsocks:
+    image: ghcr.io/shadowsocks/sslocal-rust:latest
+    env_file: .env.production
+    command:
+      - sh
+      - -lc
+      - >
+        exec sslocal
+        -s "$${SS_HOST}:$${SS_PORT}"
+        -b "0.0.0.0:1080"
+        -m "$${SS_METHOD}"
+        -k "$${SS_PASSWORD}"
+        --fast-open
+    restart: unless-stopped
+
+  dockersocket:
+    image: tecnativa/docker-socket-proxy:latest
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      CONTAINERS: 1
+
+  app:
+    container_name: raschetka
+    image: raschetka:latest
+    build:
+      context: .
+    env_file: .env.production
+    ports:
+      - "8080:8080"
+    volumes:
+      - appdata:/app/storage
+    depends_on:
+      pg:
+        condition: service_healthy
+      shadowsocks:
+        condition: service_started
+      dockersocket:
+        condition: service_started
+
+volumes:
+  pgdata:
+  appdata:
