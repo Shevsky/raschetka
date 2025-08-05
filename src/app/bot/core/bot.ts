@@ -1,0 +1,33 @@
+import { Bot } from 'grammy';
+import { registerAvailableCommands } from '~/app/bot/config/available-commands.config';
+import { registerDefaultErrorHandler, registerDefaultMiddlewares } from '~/app/bot/config/defaults.config';
+import { registerChecksScenario } from '~/app/bot/core/scenarios/checks.scenario';
+import { registerFriendsScenario } from '~/app/bot/core/scenarios/friends.scenario';
+import { registerHelpScenario } from '~/app/bot/core/scenarios/help.scenario';
+import { registerInviteScenario } from '~/app/bot/core/scenarios/invite.scenario';
+import { registerLogsScenario } from '~/app/bot/core/scenarios/logs.scenario';
+import { registerMeScenario } from '~/app/bot/core/scenarios/me.scenario';
+import { registerStartScenario } from '~/app/bot/core/scenarios/start.scenario';
+import { registerUsersScenario } from '~/app/bot/core/scenarios/users.scenario';
+import { TypedBot } from '~/app/bot/types/bot';
+
+export const bot: TypedBot = new Bot(process.env.TELEGRAM_BOT_TOKEN);
+
+export async function prepareBot(): Promise<void> {
+  // 1️⃣ Регистрируем дефолтные параметры для бота
+  registerDefaultErrorHandler(bot);
+  registerDefaultMiddlewares(bot);
+
+  // 2️⃣ Регистрируем команды и сценарии
+  registerChecksScenario(bot);
+  registerFriendsScenario(bot);
+  registerHelpScenario(bot);
+  registerInviteScenario(bot);
+  registerMeScenario(bot);
+  registerStartScenario(bot);
+  registerUsersScenario(bot);
+  registerLogsScenario(bot);
+
+  // 3️⃣ Регистрируем список доступных команд
+  await registerAvailableCommands(bot);
+}
