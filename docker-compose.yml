@@ -12,10 +12,9 @@ services:
       driver: none
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U $$POSTGRES_USER -d $$POSTGRES_DB"]
-      interval: 5m
+      interval: 1m
       timeout: 3s
-      retries: 2
-      start_period: 30s
+      retries: 20
     volumes:
       - pgdata:/var/lib/postgresql/data
 
