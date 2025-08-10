@@ -1,4 +1,4 @@
-import { Anchor, Box, Stack, Text } from '@mantine/core';
+import { Anchor, Box, Group, Stack, Text } from '@mantine/core';
 import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
 import { getExternalAccountInfo } from '~/utils/business/get-external-account-info';
@@ -15,14 +15,17 @@ export const AccountsSection = observer(() => {
     <LabeledRow name="Аккаунты">
       <Stack gap="xs">
         {accounts.map((account) => (
-          <Box key={account.provider}>
-            <Anchor href={account.url} size="sm">
-              {account.mention ?? user.name}
-            </Anchor>
-            <Text c="dimmed" size="xs">
-              {account.provider}
-            </Text>
-          </Box>
+          <Group key={account.raw.provider} align="flex-start" justify="space-between">
+            <Box flex="1">
+              <Anchor href={account.url} size="sm">
+                {account.mention ?? user.name}
+              </Anchor>
+              <Text c="dimmed" size="xs">
+                {account.raw.provider}
+              </Text>
+            </Box>
+            <Box flex="0 0">{account.raw.providerId}</Box>
+          </Group>
         ))}
       </Stack>
     </LabeledRow>

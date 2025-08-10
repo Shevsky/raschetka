@@ -7,6 +7,7 @@ import { isMountedAtPoint, mountAtPoint, unmountAtPoint } from '~/web/utils/ui/m
 type AlertType = 'success' | 'error' | 'warning';
 
 const unmountAfterMs = 5_000;
+const quickUnmountAfterMs = 2_000;
 const ifMountedDelayMs = 300;
 
 export function showAlert(type: AlertType, title: string, subtitle: string): void {
@@ -37,7 +38,12 @@ export function showAlert(type: AlertType, title: string, subtitle: string): voi
       </Alert>
     );
 
-    void chill(unmountAfterMs).then(unmount);
+    void chill(
+      match(type)
+        .with('error', 'warning', () => unmountAfterMs)
+        .with('success', () => quickUnmountAfterMs)
+        .exhaustive()
+    ).then(unmount);
   }
 
   if (isMountedAtPoint('alert')) {
