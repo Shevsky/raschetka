@@ -10,35 +10,62 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Шаг 1. Клонируем репозиторий
+      # Клонируем репозиторий
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Шаг 2. Устанавливаем Docker
+      # Посылаем сообщение, что деплой начался
+      - name: Notify start
+        id: notify_start
+        env:
+          CHAT: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          JOB_ID=$(curl -sS -H "Authorization: Bearer ${{ github.token }}" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs" \
+            | jq -r '.jobs[] | select(.name=="deploy") | .id' | head -n1)
+
+          if [ -n "$JOB_ID" ] && [ "$JOB_ID" != "null" ]; then
+            JOB_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/job/$JOB_ID"
+          else
+            JOB_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          fi
+
+          TEXT="$(printf '%s\n\n%s' '🚀 Деплой начался' "$JOB_URL")"
+
+          RESP=$(curl -sS -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+            -d disable_web_page_preview=true \
+            --data-urlencode text="$TEXT")
+          MSG_ID=$(echo "$RESP" | jq -r '.result.message_id')
+
+          echo "message_id=$MSG_ID" >> "$GITHUB_OUTPUT"
+          echo "job_url=$JOB_URL"   >> "$GITHUB_OUTPUT"
+
+      # Устанавливаем Docker
       - name: Set up Docker
         uses: docker/setup-buildx-action@v2
 
-      # Шаг 3. Собираем Docker-образ
+      # Собираем Docker-образ
       - name: Build Docker image
         run: |
           docker build -t raschetka .
           docker save -o raschetka.tar raschetka
           gzip raschetka.tar
 
-      # Шаг 4. Устанавливаем SSH-ключ
+      # Устанавливаем SSH-ключ
       - name: Set up SSH key
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      # Шаг 5. Копируем архив с Docker-образом на сервер
+      # Копируем архив с Docker-образом на сервер
       - name: Copy new app to external server
         run: |
           rsync -avz --progress -e "ssh -o StrictHostKeyChecking=no" \
             raschetka.tar.gz docker-compose.yml \
             "${{ vars.EXTERNAL_SERVER_USER }}@${{ vars.EXTERNAL_SERVER_IP_ADDR }}:${{ vars.EXTERNAL_SERVER_DESTINATION }}/"
 
-      # Шаг 6. Запускаем обновленный образ бота на сервере
+      # Запускаем обновленный образ бота на сервере
       - name: Run new app on external server
         run: |
           ssh -t -o StrictHostKeyChecking=no ${{ vars.EXTERNAL_SERVER_USER }}@${{ vars.EXTERNAL_SERVER_IP_ADDR }} "bash -s" << 'EOF'
@@ -56,26 +83,19 @@ jobs:
             if [ -n "$OLD_ID" ]; then docker rmi "$OLD_ID" --force; fi
           EOF
 
-  notify:
-    needs: deploy
-    runs-on: ubuntu-latest
-    if: always()
-
-    steps:
-      # Единственный шаг: отправляем сообщение о деплое
-      - name: Send telegram message about deploy
+      # В отправленном сообщении пишем статус деплоя
+      - name: Notify finish (edit message)
         run: |
-          case "${{ needs.deploy.result }}" in
+          case "${{ job.status }}" in
             success)   STATUS="✅ Успешный деплой" ;;
             cancelled) STATUS="⚪️ Деплой отменён" ;;
             *)         STATUS="❌ Деплой сломался" ;;
           esac
 
-          RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          TEXT="$(printf '%s\n\n%s' "$STATUS" "${{ steps.notify_start.outputs.job_url }}")"
 
-          TEXT="$(printf '%s\n\n%s' "$STATUS" "$RUN_URL")"
-
-          curl -sS -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+          curl -sS -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/editMessageText" \
             -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+            -d message_id="${{ steps.notify_start.outputs.message_id }}" \
             -d disable_web_page_preview=true \
-            --data-urlencode text="${TEXT}"
+            --data-urlencode text="$TEXT"
