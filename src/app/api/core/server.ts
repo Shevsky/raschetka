@@ -1,9 +1,13 @@
 import fastifyStatic from '@fastify/static';
 import { fastifyTRPCPlugin, FastifyTRPCPluginOptions } from '@trpc/server/adapters/fastify';
-import fastify, { FastifyRequest } from 'fastify';
-import { IncomingMessage } from 'node:http';
+import fastify from 'fastify';
 import { resolve } from 'node:path';
-import { registerDefaultErrorHandler, registerDefaultPlugins } from '~/app/api/config/defaults.config';
+import {
+  registerDefaultErrorHandler,
+  registerDefaultPlugins,
+  registerDefaultRequestsStorage,
+  requests
+} from '~/app/api/config/defaults.config';
 import { createContext } from '~/app/api/config/trpc.config';
 import { ApiRouter, apiRouter } from '~/app/api/core/routers/api.router';
 
@@ -16,12 +20,7 @@ export const server = fastify({
 // 1️⃣ Регистрируем дефолтные настройки для сервера
 registerDefaultErrorHandler(server);
 registerDefaultPlugins(server);
-
-// 2️⃣ Подключаем хак для доступа к сессиям из вебсокета https://jonathan-frere.com/posts/trpc-fastify-websockets/
-const requests = new WeakMap<FastifyRequest | IncomingMessage, FastifyRequest>();
-server.addHook('onRequest', async (req) => {
-  requests.set(req.raw, req);
-});
+registerDefaultRequestsStorage(server);
 
 // Регистрирует обработчик для всех запросов, чтобы делегировать их trpc
 server.register(fastifyTRPCPlugin, {
@@ -47,5 +46,19 @@ server.register(fastifyTRPCPlugin, {
 server.register(fastifyStatic, {
   prefix: '/storage',
   root: resolve(process.env.STORAGE_PATH),
-  list: false
+  list: false,
+  dotfiles: 'deny'
+});
+
+// Обработчик 404 только после плагина статики
+server.setNotFoundHandler((req, reply) => {
+  const realReq = requests.get(req.raw ?? req) ?? req;
+  const user = realReq?.user;
+
+  console.error(`🦞 Ошибка 404 на '${req.url}' от пользователя ${user?.name} (id=${user?.id}): Not found`);
+
+  // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+  reply.status(404).send({
+    error: { code: 404, message: 'Not found' }
+  });
 });
