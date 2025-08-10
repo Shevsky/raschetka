@@ -16,7 +16,7 @@ export function registerLogsScenario(bot: TypedBot) {
 
     const lines = Number(ctx.match);
 
-    if (!lines) {
+    if (!lines || lines <= 0) {
       await ctx.reply(...getLogsInvalidUsageMessage());
 
       return next();
