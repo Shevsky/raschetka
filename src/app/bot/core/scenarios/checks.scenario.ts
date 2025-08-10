@@ -41,6 +41,8 @@ export function registerChecksScenario(bot: TypedBot) {
     const user = await ctx.user();
 
     if (!user.permissions.includes(Permission.CREATE_CHECKS)) {
+      console.info(`🙅‍♀️ ${user.name} (id=${user.id}) попытался что-то нам послать, но мы это проигнорировали`);
+
       // Если нет прав на создание чеков, то дальше не идём
       return next();
     }
@@ -59,13 +61,19 @@ export function registerChecksScenario(bot: TypedBot) {
     }
 
     if (ctx.update.message.document) {
+      console.info(`📨 ${user.name} (id=${user.id}) прислал нам какой-то файл`);
+
       // Если отправили документ, то сохраним его
       const document = ctx.update.message.document;
 
       if (!document.file_name?.endsWith('json')) {
         // Если отправили не json, сразу выкидываем ответ с ошибкой
 
-        return ctx.reply(...getUnknownMimeTypeErrorMessage(String(document.mime_type)));
+        const mimeType = String(document.mime_type);
+
+        console.info(`🙅‍♀️ Файл от ${user.name} (id=${user.id}) нам не подходит (${mimeType})`);
+
+        return ctx.reply(...getUnknownMimeTypeErrorMessage(mimeType));
       }
 
       // Скачиваем файл как json и создаём чек
@@ -83,6 +91,8 @@ export function registerChecksScenario(bot: TypedBot) {
         receipt = out.value;
       }
     } else if (ctx.update.message.photo) {
+      console.info(`📨 ${user.name} (id=${user.id}) прислал нам фотографию, надеюсь, что это QR код`);
+
       // Вытаскиваем фотку (в самом лучшем качестве будет последняя в массиве)
       const photo = ctx.update.message.photo.at(-1)!;
 
@@ -91,6 +101,8 @@ export function registerChecksScenario(bot: TypedBot) {
       const out = await getReceiptFromQRFile(buffer);
 
       if (out instanceof Left) {
+        console.info(`🙅‍♀️ Фотография от ${user.name} (id=${user.id}) какая-то не такая (${out.error.code})`);
+
         return ctx.reply(
           ...match(out.error.code)
             .with(ReceiptFromQRFileErrorCode.QR_NOT_FOUND, () => getQRNotFoundErrorMessage())
@@ -101,11 +113,17 @@ export function registerChecksScenario(bot: TypedBot) {
         receipt = out.value;
       }
     } else {
+      console.info(`🙅‍♀️ ${user.name} прислал нам совсем какую-то непонятную дичь...`);
+
       return next();
     }
 
     // Создаём пустой чек из фискальника, что распарсили ранее
     const [check, isDuplicate] = await checkService.createCheckFromReceipt(user.id, receipt, group?.id);
+
+    console.info(
+      `✅ То, что нам прилетело от ${user.name} (id=${user.id}), было сохранено как чек (id=${check.id}, isDuplicate=${isDuplicate})`
+    );
 
     let message: TypedMessage;
 
