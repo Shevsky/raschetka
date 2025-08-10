@@ -34,8 +34,11 @@ server.register(fastifyTRPCPlugin, {
 
       return createContext({ ...options, req: realReq });
     },
-    onError({ path, error }) {
-      console.error(`👻 Ошибка tRPC на '${path}':`, error);
+    onError({ path, error, req }) {
+      const realReq = requests.get(req.raw ?? req) ?? req;
+      const user = realReq?.user;
+
+      console.error(`👻 Ошибка tRPC на '${path}' от ${user?.name} (id=${user?.id}):`, error);
     }
   } satisfies FastifyTRPCPluginOptions<ApiRouter>['trpcOptions']
 });

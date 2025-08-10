@@ -23,7 +23,7 @@ export function registerDefaultErrorHandler(bot: TypedBot): void {
 
     console.error(
       `❌ Ошибка при обработке запроса (update=${ctx.update.update_id}, errid=${errid})`.concat(
-        ctx.from ? ` от ${ctx.from.username} (id=${ctx.from.id}):` : ':'
+        ctx.from ? ` от ${[ctx.from.first_name, ctx.from.last_name].filter(Boolean).join(' ')} (id=${ctx.from.id}):` : ':'
       )
     );
 
