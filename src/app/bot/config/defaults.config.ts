@@ -15,25 +15,11 @@ import { uuid } from '~/utils/misc/uuid';
 
 /** Регистрирует дефолтный обработчик ошибок для бота */
 export function registerDefaultErrorHandler(bot: TypedBot): void {
-  bot.catch((error) => {
+  bot.catch(async (error) => {
     const ctx = error.ctx;
     const cause = error.error;
 
     const errid = uuid();
-
-    console.error(
-      `❌ Ошибка при обработке запроса (update=${ctx.update.update_id}, errid=${errid})`.concat(
-        ctx.from ? ` от ${[ctx.from.first_name, ctx.from.last_name].filter(Boolean).join(' ')} (id=${ctx.from.id}):` : ':'
-      )
-    );
-
-    if (cause instanceof GrammyError) {
-      console.error('🤡 Ошибка в запросе:', cause.description);
-    } else if (cause instanceof HttpError) {
-      console.error('🗿 Ошибка взаимодействия с Telegram API:', cause);
-    } else {
-      console.error('🤔 Неизвестная ошибка:', cause);
-    }
 
     // Если в режиме ответа на callback, то ошибку ещё и в answerCallbackQuery отправляем
     if (ctx.callbackQuery) {
@@ -54,6 +40,26 @@ export function registerDefaultErrorHandler(bot: TypedBot): void {
         }
       )
     ).catch(noop);
+
+    const user = await error.ctx.user().catch(noop);
+
+    console.error(
+      `❌ Ошибка при обработке запроса (update=${ctx.update.update_id}, errid=${errid})`.concat(
+        user
+          ? ` от пользователя ${user.name} (id=${user.id}):`
+          : ctx.from
+            ? ` от незарегистрированного ${ctx.from.first_name} (id=${ctx.from.id})`
+            : ':'
+      )
+    );
+
+    if (cause instanceof GrammyError) {
+      console.error('🤡 Ошибка в запросе:', cause.description);
+    } else if (cause instanceof HttpError) {
+      console.error('🗿 Ошибка взаимодействия с Telegram API:', cause);
+    } else {
+      console.error('🤔 Неизвестная ошибка:', cause);
+    }
   });
 }
 

@@ -6,9 +6,9 @@ export function getLogsInvalidUsageMessage() {
 
 export function getLogsMessage(logs: string) {
   return [
-    `<pre>${logs}</pre>`,
+    `\`\`\`\n${logs}\n\`\`\``,
     {
-      parse_mode: 'HTML'
+      parse_mode: 'Markdown'
     }
   ] satisfies TypedMessage;
 }
