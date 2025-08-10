@@ -8,6 +8,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
 
     steps:
       # Клонируем репозиторий
@@ -20,13 +22,11 @@ jobs:
         env:
           CHAT: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
-          JOB_ID=$(curl -sS -H "Authorization: Bearer ${{ github.token }}" \
+          JOB_URL=$(curl -sS -H "Authorization: Bearer ${{ github.token }}" \
             "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs" \
-            | jq -r '.jobs[] | select(.name=="deploy") | .id' | head -n1)
+            | jq -r '.jobs[] | select(.name|ascii_downcase=="deploy") | .html_url' | head -n1)
 
-          if [ -n "$JOB_ID" ] && [ "$JOB_ID" != "null" ]; then
-            JOB_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/job/$JOB_ID"
-          else
+          if [ -z "$JOB_URL" ] || [ "$JOB_URL" = "null" ]; then
             JOB_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           fi
 
