@@ -21,9 +21,9 @@ FROM ${NODE_IMAGE} AS runtime
 RUN apk add --no-cache 'nginx<1.29' 'supervisor<4.3' fail2ban gettext
 
 RUN addgroup -S app && adduser -S app -G app && \
-    mkdir -p /run/nginx /run/supervisord /run/fail2ban /var/lib/nginx /var/log/nginx /var/cache/nginx /var/lib/fail2ban /usr/share/nginx/html /app /app/storage && \
-    touch /var/log/fail2ban.log && touch /app/storage/.keep && \
-    chown -R app:app /run/nginx /run/supervisord /run/fail2ban /var/lib/nginx /var/log/nginx /var/cache/nginx /var/lib/fail2ban /usr/share/nginx/html /etc/nginx/http.d /var/log/fail2ban.log /app /app/storage
+    mkdir -p /run/nginx /run/supervisord /run/fail2ban /var/lib/nginx /var/log/nginx /var/cache/nginx /var/lib/denylist /var/lib/fail2ban /usr/share/nginx/html /app /app/storage && \
+    touch /var/log/fail2ban.log && touch /var/lib/denylist/denylist.conf && touch /app/storage/.keep && \
+    chown -R app:app /run/nginx /run/supervisord /run/fail2ban /var/lib/nginx /var/log/nginx /var/cache/nginx /var/lib/denylist /var/lib/fail2ban /usr/share/nginx/html /etc/nginx/http.d /var/log/fail2ban.log /app /app/storage
 
 USER app
 
