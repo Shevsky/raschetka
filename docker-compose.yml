@@ -60,7 +60,6 @@ services:
     volumes:
       - appdata:/app/storage
       - fail2bandata:/var/lib/fail2ban
-      - denylist:/var/lib/denylist
     depends_on:
       pg:
         condition: service_healthy
@@ -73,4 +72,3 @@ volumes:
   pgdata:
   appdata:
   fail2bandata:
-  denylist:
