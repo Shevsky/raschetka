@@ -47,8 +47,6 @@ ENV PYTHONWARNINGS="ignore:pkg_resources is deprecated as an API:UserWarning"
 RUN printf "[sshd]\nenabled = false\n"       >  /etc/fail2ban/jail.d/zzzz-disable-sshd.local && \
     printf "[sshd-ddos]\nenabled = false\n"  >  /etc/fail2ban/jail.d/zzzz-disable-sshd-ddos.local
 
-RUN sed -i 's|^#\?dbfile .*|dbfile = /var/lib/fail2ban/fail2ban.sqlite3|' /etc/fail2ban/fail2ban.conf || true
-
 EXPOSE 8080
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
