@@ -52,7 +52,7 @@ export function getInviteFromUserAcceptedMessage(inviter: UserModel) {
 export function getUserFriendsMessage(friends: Array<UserModel>) {
   return [
     dedent`
-      <b>Твои друзья в боте</b>
+      <b>👨‍👩‍👧‍👦 Твои друзья в боте</b>
 
       ${friends.map((friend) => getMentionMarkup(friend, { format: true })).join('\n')}
     `,
@@ -111,7 +111,7 @@ export function getLatestUsersMessage(latestUsers: Array<UserModel>) {
 
   return [
     dedent`
-      <b>Последние зарегистрированные пользователи</b>
+      <b>‍👨‍👩‍👧‍👦 Последние зарегистрированные пользователи</b>
 
       ${
         groups.length > 1

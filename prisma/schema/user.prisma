@@ -40,4 +40,6 @@ enum Permission {
   EDIT_USERS
   // Можно ли читать логи прямо из бота
   SEE_LOGS
+  // Можно ли банить/разбанить пользователей по IP через fail2ban
+  FAIL2BAN
 }

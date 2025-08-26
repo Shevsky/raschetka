@@ -2,6 +2,7 @@ import { Bot } from 'grammy';
 import { registerAvailableCommands } from '~/app/bot/config/available-commands.config';
 import { registerDefaultErrorHandler, registerDefaultMiddlewares } from '~/app/bot/config/defaults.config';
 import { registerChecksScenario } from '~/app/bot/core/scenarios/checks.scenario';
+import { registerF2BScenario } from '~/app/bot/core/scenarios/f2b.scenario';
 import { registerFriendsScenario } from '~/app/bot/core/scenarios/friends.scenario';
 import { registerHelpScenario } from '~/app/bot/core/scenarios/help.scenario';
 import { registerInviteScenario } from '~/app/bot/core/scenarios/invite.scenario';
@@ -20,6 +21,7 @@ export async function prepareBot(): Promise<void> {
 
   // 2️⃣ Регистрируем команды и сценарии
   registerChecksScenario(bot);
+  registerF2BScenario(bot);
   registerFriendsScenario(bot);
   registerHelpScenario(bot);
   registerInviteScenario(bot);
