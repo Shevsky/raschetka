@@ -12,15 +12,15 @@ export async function configureStorage(): Promise<void> {
 }
 
 type StoragePathPair = {
-  filename: string;
   path: string;
+  fullpath: string;
 };
 
-export function getStoragePathPair(target: StorageTarget, id: string): StoragePathPair {
-  const filename = `${target}/${id}`;
+export function getStoragePathPair(target: StorageTarget, filename: string, extension: string): StoragePathPair {
+  const path = `${target}/${filename}.${extension}`;
 
   return {
-    filename,
-    path: resolve(process.env.STORAGE_PATH, filename)
+    path,
+    fullpath: resolve(process.env.STORAGE_PATH, path)
   };
 }

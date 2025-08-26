@@ -1,3 +1,4 @@
+import crypto from 'node:crypto';
 import { match } from 'ts-pattern';
 import { getCheckAssignedMessage } from '~/app/bot/core/messages/checks.messages';
 import { getInviteFromUserAcceptedMessage } from '~/app/bot/core/messages/users.messages';
@@ -39,10 +40,16 @@ export function registerStartScenario(bot: TypedBot): void {
             const photo = photos.photos.at(0)?.at(-1);
 
             if (photo) {
-              const pair = getStoragePathPair(StorageTarget.USERPICS, `${from.username}_${photo.file_unique_id}.jpg`);
+              const filename = crypto
+                .createHash('sha1')
+                .update(`${from.username}\0${photo.file_unique_id}`)
+                .digest('hex')
+                // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+                .slice(0, 18);
+              const pair = getStoragePathPair(StorageTarget.USERPICS, filename, 'jpg');
 
-              userpic = pair.filename;
-              await ctx.streamFile(photo, pair.path);
+              await ctx.streamFile(photo, pair.fullpath);
+              userpic = pair.path;
             }
           }
 
