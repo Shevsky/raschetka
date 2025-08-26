@@ -5,5 +5,6 @@ export const permissionsTitles: Record<Permission, string> = {
   [Permission.CREATE_CHECKS]: 'Создавать новые чеки',
   [Permission.SEE_USERS]: 'Смотреть всех пользователей',
   [Permission.EDIT_USERS]: 'Редактировать пользователей',
-  [Permission.SEE_LOGS]: 'Читать логи'
+  [Permission.SEE_LOGS]: 'Читать логи',
+  [Permission.FAIL2BAN]: 'Управление fail2ban'
 };
