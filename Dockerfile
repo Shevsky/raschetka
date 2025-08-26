@@ -18,17 +18,18 @@ RUN npm prune --omit=dev
 # 🏁 Рантайм стадия
 FROM ${NODE_IMAGE} AS runtime
 
-RUN apk add --no-cache 'nginx<1.29' 'supervisor<4.3' gettext
+RUN apk add --no-cache 'nginx<1.29' 'supervisor<4.3' fail2ban gettext
 
 RUN addgroup -S app && adduser -S app -G app && \
-    mkdir -p /run/nginx /run/supervisord /var/lib/nginx /var/log/nginx /var/cache/nginx /usr/share/nginx/html /app /app/storage && \
-    chown -R app:app /run/nginx /run/supervisord /var/lib/nginx /var/log/nginx /var/cache/nginx /usr/share/nginx/html /etc/nginx/http.d /app /app/storage && \
-    touch /app/storage/.keep
+    mkdir -p /run/nginx /run/supervisord /run/fail2ban /var/lib/nginx /var/log/nginx /var/cache/nginx /var/lib/fail2ban /usr/share/nginx/html /app /app/storage && \
+    touch /var/log/fail2ban.log && touch /app/storage/.keep && \
+    chown -R app:app /run/nginx /run/supervisord /run/fail2ban /var/lib/nginx /var/log/nginx /var/cache/nginx /var/lib/fail2ban /usr/share/nginx/html /etc/nginx/http.d /var/log/fail2ban.log /app /app/storage
 
 USER app
 
 COPY --chown=app:app nginx.conf /etc/nginx/http.d/default.conf.template
 COPY --chown=app:app supervisord.conf /etc/supervisord.conf
+COPY --chown=app:app config/fail2ban /etc/fail2ban
 
 # 🤙 Копируем файлы фронта
 COPY --chown=app:app --from=build /build/dist/web /usr/share/nginx/html
@@ -41,8 +42,13 @@ COPY --chown=app:app --from=build /build/node_modules /app/node_modules
 COPY --chown=app:app package.json .npmrc /app/
 COPY --chown=app:app prisma /app/prisma
 
-EXPOSE 8080
-
 ENV PYTHONWARNINGS="ignore:pkg_resources is deprecated as an API:UserWarning"
+
+RUN printf "[sshd]\nenabled = false\n"       >  /etc/fail2ban/jail.d/zzzz-disable-sshd.local && \
+    printf "[sshd-ddos]\nenabled = false\n"  >  /etc/fail2ban/jail.d/zzzz-disable-sshd-ddos.local
+
+RUN sed -i 's|^#\?dbfile .*|dbfile = /var/lib/fail2ban/fail2ban.sqlite3|' /etc/fail2ban/fail2ban.conf || true
+
+EXPOSE 8080
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]

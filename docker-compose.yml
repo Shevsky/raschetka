@@ -14,9 +14,10 @@ services:
       driver: none
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U $$POSTGRES_USER -d $$POSTGRES_DB"]
-      interval: 1m
+      interval: 5s
       timeout: 3s
-      retries: 20
+      retries: 30
+      start_period: 20s
     volumes:
       - pgdata:/var/lib/postgresql/data
 
@@ -58,6 +59,8 @@ services:
         max-file: "5"
     volumes:
       - appdata:/app/storage
+      - fail2bandata:/var/lib/fail2ban
+      - ./denylist.conf:/etc/nginx/denylist.conf
     depends_on:
       pg:
         condition: service_healthy
@@ -69,3 +72,4 @@ services:
 volumes:
   pgdata:
   appdata:
+  fail2bandata:
