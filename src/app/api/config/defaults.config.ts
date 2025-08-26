@@ -25,7 +25,10 @@ export function registerDefaultErrorHandler(server: FastifyInstance): void {
     const { status, message } =
       error instanceof InvalidArgumentError ? { status: 400, message: 'Bad request' } : { status: 500, message: 'Internal error' };
 
-    console.error(`☄️ Ошибка ${status} глобального обработчика на '${req.url}' от пользователя ${user?.name} (id=${user?.id}):`, error);
+    console.error(
+      `☄️ Ошибка ${status} глобального обработчика на '${req.url}' от пользователя ${user?.name} (id=${user?.id}, ip=${req.ip}):`,
+      error
+    );
 
     reply.status(status).send({
       error: {

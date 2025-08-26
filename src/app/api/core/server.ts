@@ -14,7 +14,8 @@ import { ApiRouter, apiRouter } from '~/app/api/core/routers/api.router';
 export const server = fastify({
   maxParamLength: 5000,
   logger: { level: process.env.DEBUG === '1' ? 'debug' : 'error' },
-  disableRequestLogging: true
+  disableRequestLogging: true,
+  trustProxy: true
 });
 
 // 1️⃣ Регистрируем дефолтные настройки для сервера
@@ -37,7 +38,7 @@ server.register(fastifyTRPCPlugin, {
       const realReq = requests.get(req.raw ?? req) ?? req;
       const user = realReq?.user;
 
-      console.error(`👻 Ошибка tRPC на '${path}' от пользователя ${user?.name} (id=${user?.id}):`, error);
+      console.error(`👻 Ошибка tRPC на '${path}' от пользователя ${user?.name} (id=${user?.id}, ip=${req.ip}):`, error);
     }
   } satisfies FastifyTRPCPluginOptions<ApiRouter>['trpcOptions']
 });
@@ -55,7 +56,7 @@ server.setNotFoundHandler((req, reply) => {
   const realReq = requests.get(req.raw ?? req) ?? req;
   const user = realReq?.user;
 
-  console.error(`🦞 Ошибка 404 на '${req.url}' от пользователя ${user?.name} (id=${user?.id}): Not found`);
+  console.error(`🦞 Ошибка 404 на '${req.url}' от пользователя ${user?.name} (id=${user?.id}, ip=${req.ip}): Not found`);
 
   // eslint-disable-next-line @typescript-eslint/no-magic-numbers
   reply.status(404).send({
