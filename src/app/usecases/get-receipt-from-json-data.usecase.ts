@@ -14,7 +14,7 @@ export class ReceiptFromJSONDataError extends RuntimeError {
   readonly code: ReceiptFromJSONDataErrorCode;
 
   constructor(code: ReceiptFromJSONDataErrorCode, options?: BaseErrorOptions) {
-    super('Не удалось получить чек из json', options);
+    super(`Не удалось получить чек из json: ${code}`, options);
 
     this.code = code;
   }

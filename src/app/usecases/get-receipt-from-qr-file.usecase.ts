@@ -20,7 +20,7 @@ export class ReceiptFromQRFileError extends RuntimeError {
   readonly code: ReceiptFromQRFileErrorCode;
 
   constructor(code: ReceiptFromQRFileErrorCode, options?: BaseErrorOptions) {
-    super('Не удалось получить чек из QR кода', options);
+    super(`Не удалось получить чек из QR кода: ${code}`, options);
 
     this.code = code;
   }

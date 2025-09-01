@@ -12,7 +12,7 @@ export class TelegramInitDataError extends RuntimeError {
   readonly code: TelegramInitDataErrorCode;
 
   constructor(code: TelegramInitDataErrorCode, options?: BaseErrorOptions) {
-    super('Невалидный Telegram init data', options);
+    super(`Невалидный Telegram init data: ${code}`, options);
 
     this.code = code;
   }
