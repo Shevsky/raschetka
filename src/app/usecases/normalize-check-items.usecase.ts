@@ -15,7 +15,8 @@ function* traverseCheckItems<const T extends Partial<CheckItemModel>>(items: Arr
       for (let i = 0; i < item.quantity; i++) {
         yield {
           ...item,
-          quantity: 1
+          quantity: 1,
+          sum: item.price
         };
       }
     } else {
