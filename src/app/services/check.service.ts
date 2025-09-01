@@ -432,8 +432,11 @@ class CheckService {
       const authorId = check.userId;
       const participantId = participant.id;
 
-      // Юзеру отправляем сообщение, что он молодец и заполнил чек
-      await mqService.queueMessage(tx, userId, wrapEnvelope({ type: EnvelopeType.CHECK_FILLED, payload: { id, participantId } }));
+      if (userId !== authorId) {
+        // Юзеру отправляем сообщение, что он молодец и заполнил чек
+        await mqService.queueMessage(tx, userId, wrapEnvelope({ type: EnvelopeType.CHECK_FILLED, payload: { id, participantId } }));
+      }
+
       // Автору чека тоже отправляем сообщение
       await mqService.queueMessage(tx, authorId, wrapEnvelope({ type: EnvelopeType.CHECK_FILLED, payload: { id, participantId } }));
     });
