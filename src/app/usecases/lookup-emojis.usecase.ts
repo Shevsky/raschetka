@@ -2,9 +2,9 @@ import dedent from 'dedent';
 import { geminiClient } from '~/app/clients/gemini.client';
 import { prisma } from '~/app/prisma';
 import { unclassifiedEmojis } from '~/utils/dicts/emojis.dict';
-import { choice } from '~/utils/misc/choice';
 import { findIndexes } from '~/utils/misc/find-indexes';
 import { isEmoji } from '~/utils/misc/is-emoji';
+import { pickStable } from '~/utils/misc/pick-stable';
 import { unique } from '~/utils/misc/unique';
 
 /**
@@ -36,11 +36,11 @@ export async function lookupEmojis(queries: Array<string>): Promise<Array<string
     }
   }
 
-  return queries.map((_, index) => {
+  return queries.map((query, index) => {
     if (results[index]) {
       return results[index];
     } else {
-      return choice(unclassifiedEmojis);
+      return pickStable(unclassifiedEmojis, query);
     }
   });
 }
