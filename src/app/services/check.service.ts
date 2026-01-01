@@ -177,6 +177,8 @@ class CheckService {
     const kktRegId = String(receipt.kktRegId).trim();
     const transactionAt = new Date(receipt.dateTime);
 
+    const emojis = await lookupEmojis(receipt.items.map((item) => item.name));
+
     return prisma.$transaction(async (tx) => {
       const existingCheck = await tx.check.findUnique({
         where: {
@@ -194,7 +196,6 @@ class CheckService {
       if (existingCheck) {
         return [existingCheck, true];
       } else {
-        const emojis = await lookupEmojis(receipt.items.map((item) => item.name));
         const check = await tx.check.create({
           data: {
             userId,
