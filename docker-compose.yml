@@ -21,21 +21,6 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
-  shadowsocks:
-    image: ghcr.io/shadowsocks/sslocal-rust:latest
-    env_file: .env.production
-    command:
-      - sh
-      - -lc
-      - >
-        exec sslocal
-        -s "$${SS_HOST}:$${SS_PORT}"
-        -b "0.0.0.0:1080"
-        -m "$${SS_METHOD}"
-        -k "$${SS_PASSWORD}"
-        --fast-open
-    restart: unless-stopped
-
   dockersocket:
     image: tecnativa/docker-socket-proxy:latest
     restart: unless-stopped
@@ -63,8 +48,6 @@ services:
     depends_on:
       pg:
         condition: service_healthy
-      shadowsocks:
-        condition: service_started
       dockersocket:
         condition: service_started
 

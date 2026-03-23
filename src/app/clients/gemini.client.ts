@@ -1,6 +1,5 @@
 import { timeout } from 'decorio';
-import { socksDispatcher } from 'fetch-socks';
-import { request } from 'undici';
+import { request, Socks5ProxyAgent } from 'undici';
 import { RuntimeError } from '~/utils/errors/runtime.error';
 import { isOK } from '~/utils/misc/is-ok';
 
@@ -12,15 +11,7 @@ class GeminiClient {
   readonly #url = process.env.GEMINI_URL;
   readonly #model = process.env.GEMINI_MODEL;
   readonly #key = process.env.GEMINI_KEY;
-  readonly #dispatcher =
-    process.env.NODE_ENV === 'production'
-      ? socksDispatcher({
-          // @ts-ignore
-          type: Number(process.env.SOCKS_PROXY_VERSION),
-          host: process.env.SOCKS_PROXY_HOST,
-          port: Number(process.env.SOCKS_PROXY_PORT)
-        })
-      : undefined;
+  readonly #dispatcher = process.env.SOCKS_PROXY_URL ? new Socks5ProxyAgent(process.env.SOCKS_PROXY_URL) : undefined;
 
   @timeout(timeoutMs) async generateTextContent(prompt: string): Promise<Nullish<string>> {
     const { signal } = timeout;

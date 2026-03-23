@@ -22,13 +22,7 @@ declare global {
       GEMINI_URL: string;
       GEMINI_MODEL: string;
       GEMINI_KEY: string;
-      SS_HOST: string;
-      SS_PORT: string;
-      SS_PASSWORD: string;
-      SS_METHOD: string;
-      SOCKS_PROXY_VERSION: string;
-      SOCKS_PROXY_HOST: string;
-      SOCKS_PROXY_PORT: string;
+      SOCKS_PROXY_URL: string;
     }
   }
 }
