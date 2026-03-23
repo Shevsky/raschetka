@@ -1,5 +1,5 @@
 import { Bot } from 'grammy';
-import { Socks5ProxyAgent } from 'undici';
+import { fetch, Socks5ProxyAgent } from 'undici';
 import { registerAvailableCommands } from '~/app/bot/config/available-commands.config';
 import { registerDefaultErrorHandler, registerDefaultMiddlewares } from '~/app/bot/config/defaults.config';
 import { registerChecksScenario } from '~/app/bot/core/scenarios/checks.scenario';
@@ -17,7 +17,7 @@ export const bot: TypedBot = new Bot(
   process.env.TELEGRAM_BOT_TOKEN,
   process.env.SOCKS_PROXY_URL
     ? {
-        client: { baseFetchConfig: { agent: new Socks5ProxyAgent(process.env.SOCKS_PROXY_URL) } }
+        client: { fetch, baseFetchConfig: { agent: new Socks5ProxyAgent(process.env.SOCKS_PROXY_URL) } }
       }
     : undefined
 );
