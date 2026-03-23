@@ -12,12 +12,21 @@ import { registerMeScenario } from '~/app/bot/core/scenarios/me.scenario';
 import { registerStartScenario } from '~/app/bot/core/scenarios/start.scenario';
 import { registerUsersScenario } from '~/app/bot/core/scenarios/users.scenario';
 import { TypedBot } from '~/app/bot/types/bot';
+import { toNativeSignal } from '~/utils/misc/to-native-signal';
 
 export const bot: TypedBot = new Bot(
   process.env.TELEGRAM_BOT_TOKEN,
   process.env.SOCKS_PROXY_URL
     ? {
-        client: { fetch, baseFetchConfig: { agent: new Socks5ProxyAgent(process.env.SOCKS_PROXY_URL) } }
+        client: {
+          fetch: ([input, init]: Parameters<typeof fetch>) => {
+            return fetch(input, {
+              ...(init ?? {}),
+              signal: init?.signal ? toNativeSignal(init.signal) : undefined
+            });
+          },
+          baseFetchConfig: { agent: new Socks5ProxyAgent(process.env.SOCKS_PROXY_URL) }
+        }
       }
     : undefined
 );
