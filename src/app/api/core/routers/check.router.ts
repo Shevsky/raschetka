@@ -102,6 +102,18 @@ export const checkRouter = t.router({
 
       checkUpdatedEvent.next({ id: input.id, updatedByUserId: ctx.user.id });
     }),
+  /** Закрыть чек */
+  completeCheck: protectedProcedure
+    .input(
+      z.object({
+        id: z.string()
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      await checkService.completeCheckIfAuthor(input.id, ctx.user.id);
+
+      checkUpdatedEvent.next({ id: input.id, updatedByUserId: ctx.user.id });
+    }),
   /** Подписка на событие если чек кто-то изменил/заполнил */
   onCheckUpdated: protectedProcedure
     .input(

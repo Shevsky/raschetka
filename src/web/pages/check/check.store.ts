@@ -109,6 +109,11 @@ export class CheckStore {
     return this.check.items!.filter((item) => this.selectableItemIds.includes(item.id));
   }
 
+  /** Посчитанная сумма доступных для выбора товары */
+  @computed get selectableItemsSum(): number {
+    return sumBy(this.selectableItems, 'sum');
+  }
+
   /** Выбранные текущим участником чека товары */
   @computed get selfPickedItems(): Array<CheckItemModel> {
     return this.check.items!.filter((item) => this.selfPickedItemIds.includes(item.id));
@@ -137,6 +142,11 @@ export class CheckStore {
       this.selfPrevPickedItemsSum +
       (this.tipsValues?.sum ?? 0)
     );
+  }
+
+  /** Текущий пользователь это автор чека */
+  @computed get currentUserAuthor(): boolean {
+    return this.check.user?.id === currentUser.id;
   }
 
   /** Выбран ли текущий пользователь как участник чека */
@@ -255,6 +265,12 @@ export class CheckStore {
 
       throw error;
     }
+  };
+
+  @action handleCompleteCheck = async (): Promise<void> => {
+    await trpc.check.completeCheck.mutate({
+      id: this.#id
+    });
   };
 
   /** Очистка */

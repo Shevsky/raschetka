@@ -117,6 +117,14 @@ class CheckService {
     });
   }
 
+  /** Закрыть указанный чек, но только в состоянии активного */
+  async completeCheckIfAuthor(id: string, userId: string): Promise<void> {
+    await prisma.check.update({
+      where: { id, userId, status: CheckStatus.ACTIVE },
+      data: { status: CheckStatus.COMPLETED }
+    });
+  }
+
   /** Перенести выбранные чеки в архив */
   async archiveChecks(ids: Array<string>): Promise<void> {
     await prisma.check.updateMany({

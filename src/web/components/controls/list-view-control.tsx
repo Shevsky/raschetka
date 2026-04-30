@@ -30,7 +30,7 @@ export const ListViewControl = ({ type, all, onChange }: ListViewControlProps) =
       <Chip size="xs" checked={!all} onClick={() => onChange(false)}>
         {match(type)
           .with('selected', () => 'Выбранные')
-          .with('unassigned', () => 'Неназначенные')
+          .with('unassigned', () => 'Невыбранные')
           .exhaustive()}
       </Chip>
     </Group>

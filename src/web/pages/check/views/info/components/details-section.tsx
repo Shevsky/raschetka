@@ -1,6 +1,9 @@
-import { Tabs } from '@mantine/core';
+import { Group, Tabs } from '@mantine/core';
 import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
+import { EmojiAvatar } from '~/web/components/avatars/emoji-avatar';
+import { UserAvatar } from '~/web/components/avatars/user-avatar';
+import { currentUser } from '~/web/config/auth.config';
 import { CheckContext } from '~/web/pages/check/check.context';
 import { CheckDetailsSection } from '~/web/pages/check/views/info/components/check-details-section';
 import { SelfDetailsSection } from '~/web/pages/check/views/info/components/self-details-section';
@@ -14,8 +17,18 @@ export const DetailsSection = observer(() => {
     return (
       <Tabs variant="outline" defaultValue="self">
         <Tabs.List mb="sm" grow>
-          <Tabs.Tab value="self">Моё</Tabs.Tab>
-          <Tabs.Tab value="check">По чеку</Tabs.Tab>
+          <Tabs.Tab value="self">
+            <Group gap="xs" wrap="nowrap" align="center" justify="center">
+              <UserAvatar user={currentUser} size="sm" />
+              Моё
+            </Group>
+          </Tabs.Tab>
+          <Tabs.Tab value="check">
+            <Group gap="xs" wrap="nowrap" align="center" justify="center">
+              <EmojiAvatar emoji="🧾" color="gray" size="sm" />
+              По чеку
+            </Group>
+          </Tabs.Tab>
         </Tabs.List>
         <Tabs.Panel value="self">
           <SelfDetailsSection />
