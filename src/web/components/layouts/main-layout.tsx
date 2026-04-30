@@ -97,7 +97,7 @@ export const MainLayout = ({ children, icon, title, subtitle }: MainLayoutProps)
         <AppShell.Footer
           pl={spacing}
           pr={spacing}
-          style={{ opacity: footerVisible ? 1 : 0, pointerEvents: footerVisible ? 'none' : 'auto' }}
+          style={{ opacity: footerVisible ? 1 : 0, pointerEvents: footerVisible ? 'auto' : 'none' }}
         >
           <Box w="100%" display="flex" style={{ height: `${footerHeight}px` }}>
             <Box ref={footerRef} w="100%" style={{ alignSelf: 'center' }}>
