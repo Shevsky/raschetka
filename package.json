@@ -70,7 +70,7 @@
     "@mantine/core": "8.0.2",
     "@stylistic/eslint-plugin": "4.2.0",
     "@tabler/icons-react": "3.17.0",
-    "@telegram-apps/sdk-react": "2.0.20",
+    "@tma.js/sdk": "3.1.6",
     "@total-typescript/ts-reset": "0.6.1",
     "@trpc/client": "11.1.2",
     "@types/dockerode": "3.3.42",

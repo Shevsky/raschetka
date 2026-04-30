@@ -1,5 +1,5 @@
 import { Button, Group } from '@mantine/core';
-import { miniApp } from '@telegram-apps/sdk-react';
+import { miniApp } from '@tma.js/sdk';
 import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
 import { CheckContext } from '~/web/pages/check/check.context';

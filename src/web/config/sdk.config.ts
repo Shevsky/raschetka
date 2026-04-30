@@ -1,8 +1,8 @@
-import { $debug, backButton, init, initData, miniApp, themeParams, viewport } from '@telegram-apps/sdk-react';
+import { backButton, init, initData, miniApp, setDebug, themeParams, viewport } from '@tma.js/sdk';
 import { RuntimeError } from '~/utils/errors/runtime.error';
 
 export function configureSDK(): void {
-  $debug.set(import.meta.env.DEV);
+  setDebug(import.meta.env.DEV);
 
   init();
 

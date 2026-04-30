@@ -1,7 +1,7 @@
 import { injectGlobal } from '@emotion/css';
 import { ActionIcon, Box, MantineColorScheme, MantineProviderProps, useMantineColorScheme } from '@mantine/core';
 import { IconSun } from '@tabler/icons-react';
-import { themeParams } from '@telegram-apps/sdk-react';
+import { themeParams } from '@tma.js/sdk';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { colorSchemeSelector } from '~/web/utils/ui/color-scheme-selector';
@@ -11,7 +11,7 @@ export const mantineProviderProps: MantineProviderProps = {};
 export function configureMantine(): void {
   const isDark = themeParams.isDark();
   const textColor = themeParams.textColor();
-  const backgroundColor = themeParams.backgroundColor();
+  const backgroundColor = themeParams.bgColor();
 
   const defaultColorScheme: MantineColorScheme = isDark ? 'dark' : 'light';
   mantineProviderProps.defaultColorScheme = defaultColorScheme;

@@ -1,4 +1,4 @@
-import { backButton } from '@telegram-apps/sdk-react';
+import { backButton } from '@tma.js/sdk';
 import { router } from '~/web/config/router.config';
 
 export function configureBackButton(): void {

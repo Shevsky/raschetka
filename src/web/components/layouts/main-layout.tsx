@@ -1,7 +1,7 @@
 import { css } from '@emotion/css';
 import { AppShell, Box, Group, MantineSpacing, Title, Transition } from '@mantine/core';
-import { useLaunchParams } from '@telegram-apps/sdk-react';
-import { ReactNode, useRef } from 'react';
+import { retrieveLaunchParams } from '@tma.js/sdk';
+import { ReactNode, useMemo, useRef } from 'react';
 import { LayoutSpacingContext } from '~/web/contexts/layout.context';
 import { ScrollableContext } from '~/web/contexts/scrollable.context';
 import { useMountedAtPoint } from '~/web/utils/ui/mount-point';
@@ -35,13 +35,13 @@ const styles = {
 };
 
 export const MainLayout = ({ children, icon, title, subtitle }: MainLayoutProps) => {
-  const lp = useLaunchParams();
+  const lp = useMemo(() => retrieveLaunchParams(), []);
   const scrollableRef = useRef<HTMLDivElement>(null);
 
   const alert = useMountedAtPoint('alert');
   const footer = useMountedAtPoint('footer');
 
-  const bottomPadding = lp.platform === 'ios' ? iosBottomPadding : 0;
+  const bottomPadding = lp.tgWebAppPlatform === 'ios' ? iosBottomPadding : 0;
 
   return (
     <AppShell header={{ height: headerHeight }} footer={{ height: footer ? footerHeight + bottomPadding : bottomPadding }} h="100%">
