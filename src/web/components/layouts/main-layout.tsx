@@ -1,7 +1,7 @@
 import { css } from '@emotion/css';
 import { AppShell, Box, Group, MantineSpacing, Title, Transition } from '@mantine/core';
 import { retrieveLaunchParams } from '@tma.js/sdk';
-import { ReactNode, useMemo, useRef } from 'react';
+import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { LayoutSpacingContext } from '~/web/contexts/layout.context';
 import { ScrollableContext } from '~/web/contexts/scrollable.context';
 import { useMountedAtPoint } from '~/web/utils/ui/mount-point';
@@ -37,14 +37,26 @@ const styles = {
 export const MainLayout = ({ children, icon, title, subtitle }: MainLayoutProps) => {
   const lp = useMemo(() => retrieveLaunchParams(), []);
   const scrollableRef = useRef<HTMLDivElement>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
 
   const alert = useMountedAtPoint('alert');
   const footer = useMountedAtPoint('footer');
 
+  const [footerVisible, setFooterVisible] = useState(false);
   const bottomPadding = lp.tgWebAppPlatform === 'ios' ? iosBottomPadding : 0;
 
+  useEffect(() => {
+    requestAnimationFrame(() => {
+      setFooterVisible(footerRef.current ? footerRef.current.getBoundingClientRect().height > 0 : false);
+    });
+  }, [footer]);
+
   return (
-    <AppShell header={{ height: headerHeight }} footer={{ height: footer ? footerHeight + bottomPadding : bottomPadding }} h="100%">
+    <AppShell
+      header={{ height: headerHeight }}
+      footer={{ height: footer && footerVisible ? footerHeight + bottomPadding : bottomPadding }}
+      h="100%"
+    >
       {title && (
         <AppShell.Header pl={spacing} pr={spacing}>
           <Box w="100%" h="100%" display="flex">
@@ -82,9 +94,13 @@ export const MainLayout = ({ children, icon, title, subtitle }: MainLayoutProps)
         </LayoutSpacingContext>
       </AppShell.Main>
       {footer && (
-        <AppShell.Footer pl={spacing} pr={spacing}>
+        <AppShell.Footer
+          pl={spacing}
+          pr={spacing}
+          style={{ opacity: footerVisible ? 1 : 0, pointerEvents: footerVisible ? 'none' : 'auto' }}
+        >
           <Box w="100%" display="flex" style={{ height: `${footerHeight}px` }}>
-            <Box w="100%" style={{ alignSelf: 'center' }}>
+            <Box ref={footerRef} w="100%" style={{ alignSelf: 'center' }}>
               {footer}
             </Box>
           </Box>
