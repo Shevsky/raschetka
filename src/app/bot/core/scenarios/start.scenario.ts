@@ -61,7 +61,7 @@ export function registerStartScenario(bot: TypedBot): void {
             null,
             from.last_name,
             detectGender(from.first_name),
-            `@${from.username}`,
+            from.username ? `@${from.username}` : null,
             userpic
           );
 
