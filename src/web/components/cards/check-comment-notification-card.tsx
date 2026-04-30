@@ -7,6 +7,10 @@ type CheckCommentNotificationCardProps = {
 };
 
 export const CheckCommentNotificationCard = ({ check }: CheckCommentNotificationCardProps) => {
+  if (!check.comment) {
+    return null;
+  }
+
   return (
     <NotificationCard color="green">
       <span dangerouslySetInnerHTML={{ __html: formatCheckComment(check) }} />
