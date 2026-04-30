@@ -2,6 +2,10 @@ import { TypedBot } from '~/app/bot/types/bot';
 
 /** 🚁 Регистрирует список доступных команд, чтоб в боте высвечивалось */
 export async function registerAvailableCommands(bot: TypedBot): Promise<void> {
+  if (process.env.NODE_ENV === 'development') {
+    return;
+  }
+
   await bot.api.setMyCommands([
     {
       command: 'start',
