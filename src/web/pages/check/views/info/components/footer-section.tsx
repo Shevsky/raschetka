@@ -54,11 +54,7 @@ export const FooterSection = mounted(
     };
 
     if (check.status !== CheckStatus.ACTIVE || !currentUserAuthor) {
-      return (
-        <div>
-          <div></div>
-        </div>
-      );
+      return null;
     }
 
     return (

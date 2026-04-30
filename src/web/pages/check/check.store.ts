@@ -146,7 +146,7 @@ export class CheckStore {
 
   /** Текущий пользователь это автор чека */
   @computed get currentUserAuthor(): boolean {
-    return this.check.user?.id === currentUser.id;
+    return this.check.userId === currentUser.id;
   }
 
   /** Выбран ли текущий пользователь как участник чека */
