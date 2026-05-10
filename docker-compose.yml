@@ -7,7 +7,7 @@ services:
     container_name: raschetka_pg
     image: postgres:15-alpine
     restart: always
-    env_file: .env.production
+    env_file: .env
     ports:
       - "127.0.0.1:5433:5432"
     logging:
@@ -34,7 +34,7 @@ services:
     image: raschetka:latest
     build:
       context: .
-    env_file: .env.production
+    env_file: .env
     ports:
       - "127.0.0.1:${APP_PORT}:${APP_PORT}"
     logging:
