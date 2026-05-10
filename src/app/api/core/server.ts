@@ -55,7 +55,8 @@ server.register(fastifyStatic, {
   prefix: '/assets',
   root: resolve(process.env.PUBLIC_PATH, 'assets'),
   list: false,
-  dotfiles: 'deny'
+  dotfiles: 'deny',
+  decorateReply: false
 });
 
 server.get('*', (_, reply) => {
