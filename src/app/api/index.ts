@@ -1,5 +1,5 @@
 import { server } from '~/app/api/core/server';
 
 export default async function startApi(): Promise<void> {
-  await server.listen({ port: Number(process.env.APP_PORT) }).then(() => console.info('✅ API сервер запущен'));
+  await server.listen({ port: Number(process.env.APP_PORT), host: '0.0.0.0' }).then(() => console.info('✅ API сервер запущен'));
 }
