@@ -87,6 +87,7 @@ jobs:
 
       # В отправленном сообщении пишем статус деплоя
       - name: Notify finish (edit message)
+        continue-on-error: true
         run: |
           case "${{ job.status }}" in
             success)   STATUS="✅ Успешный деплой" ;;
