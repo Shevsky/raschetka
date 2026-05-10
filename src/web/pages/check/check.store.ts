@@ -317,7 +317,7 @@ export class CheckStore {
       }
       case CheckStatus.ACTIVE: {
         this.selectableItemIds = this.check.items!.filter((item) => !item.groupId && !item.participantId).map((item) => item.id);
-        // this.#handleSubscribeUpdates();
+        this.#handleSubscribeUpdates();
 
         break;
       }

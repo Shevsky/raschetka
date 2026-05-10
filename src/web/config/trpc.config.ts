@@ -26,12 +26,23 @@ export function isTRPCError(error: unknown): error is TRPCError {
 
 export const trpc: TRPCClient<ApiRouter> = createTRPCClient<ApiRouter>({
   links: [
-    httpBatchLink({
-      url: '/api',
-      transformer: superjson,
-      async headers() {
-        return {};
-      }
+    splitLink({
+      condition: (op) => op.type === 'subscription',
+      true: wsLink({
+        client: createWSClient({
+          url: `wss://${location.host}/api`,
+          lazy: { enabled: true, closeMs: 0 },
+          keepAlive: { enabled: true }
+        }),
+        transformer: superjson
+      }),
+      false: httpBatchLink({
+        url: '/api',
+        transformer: superjson,
+        async headers() {
+          return {};
+        }
+      })
     })
   ]
 });
