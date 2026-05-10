@@ -38,4 +38,6 @@ COPY --chown=app:app --from=build /build/dist/web /app/public
 COPY --chown=app:app package.json .npmrc /app/
 COPY --chown=app:app prisma /app/prisma
 
+WORKDIR /app
+
 CMD ["npm", "run", "start"]
