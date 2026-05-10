@@ -20,6 +20,7 @@
     "lint:watch": "bash -lc 'trap \"eslint_d stop\" INT TERM EXIT; eslint_d restart; chokidar \"src/**/*.{ts,tsx}\" -c \"eslint_d . --ext .ts,.tsx --cache --cache-location .eslintcache\" --debounce 200 --initial --silent'",
     "build": "rimraf dist && npm run prisma:generate && concurrently \"npm run app:build\" \"npm run web:build\" --prefix none && npm run prisma:copy-assets",
     "dev": "concurrently \"npm run lint:watch\" \"npm run app:dev\" \"npm run web:dev\" --prefix none",
+    "start": "NODE_ENV=production npx prisma migrate deploy && node app/index.js",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "type-check": "tsc --noEmit",
     "test": "vitest --run",

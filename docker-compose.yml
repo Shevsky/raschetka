@@ -36,7 +36,7 @@ services:
       context: .
     env_file: .env.production
     ports:
-      - "127.0.0.1:4904:8080"
+      - "127.0.0.1:${APP_PORT}:${APP_PORT}"
     logging:
       driver: local
       options:

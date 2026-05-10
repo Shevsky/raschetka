@@ -12,6 +12,7 @@ declare global {
       TELEGRAM_BOT_AUTH_DATE_TTL: string;
       APP_PORT: string;
       APP_SESSION_SECRET: string;
+      PUBLIC_PATH: string;
       STORAGE_PATH: string;
       WEB_PORT: string;
       WEB_HOST: string;

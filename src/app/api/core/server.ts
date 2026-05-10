@@ -51,6 +51,17 @@ server.register(fastifyStatic, {
   dotfiles: 'deny'
 });
 
+server.register(fastifyStatic, {
+  prefix: '/assets',
+  root: resolve(process.env.PUBLIC_PATH, 'assets'),
+  list: false,
+  dotfiles: 'deny'
+});
+
+server.get('*', (_, reply) => {
+  reply.sendFile('index.html', process.env.PUBLIC_PATH);
+});
+
 // Обработчик 404 только после плагина статики
 server.setNotFoundHandler((req, reply) => {
   const realReq = requests.get(req.raw ?? req) ?? req;
