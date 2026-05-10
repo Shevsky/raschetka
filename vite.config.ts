@@ -15,14 +15,14 @@ export default defineConfig(({ command }) => ({
     react({
       // @see https://github.com/vitejs/vite-plugin-react-swc/issues/179
       useAtYourOwnRisk_mutateSwcOptions(options) {
-        options.jsc.parser.decorators = true;
-        options.jsc.transform.decoratorVersion = '2022-03';
+        options.jsc!.parser!.decorators = true;
+        options.jsc!.transform!.decoratorVersion = '2022-03';
       }
     }),
     command === 'serve' && checker({ typescript: true }),
     tsconfigPaths(),
     mkcert({
-      hosts: [process.env.WEB_HOST]
+      hosts: [process.env.WEB_HOST!]
     })
   ].filter(Boolean),
   publicDir: './public',
@@ -35,6 +35,7 @@ export default defineConfig(({ command }) => ({
   },
   build: {
     target: 'es2020',
+    modulePreload: false,
     rollupOptions: {
       output: {
         dir: 'dist/web',

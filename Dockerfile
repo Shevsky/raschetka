@@ -5,7 +5,7 @@ FROM ${NODE_IMAGE} AS build
 
 WORKDIR /build
 
-COPY package*.json .npmrc index.html vite.config.mjs tsconfig.json ./
+COPY package*.json .npmrc index.html vite.config.ts tsconfig.json ./
 
 RUN ADBLOCK=1 npm ci --no-audit --no-progress
 
