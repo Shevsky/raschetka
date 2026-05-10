@@ -15,7 +15,15 @@ export const UserAvatar = ({ user, size = 'md', onClick }: UserAvatarProps) => {
   const accountWithUserpic = useMemo(() => user.accounts?.find((account) => !!account.userpic), [user]);
 
   if (accountWithUserpic) {
-    return <Avatar size={size} src={getStorageUrl(accountWithUserpic.userpic!)} radius="100%" onClick={onClick} />;
+    return (
+      <Avatar
+        size={size}
+        src={getStorageUrl(accountWithUserpic.userpic!)}
+        imageProps={{ loading: 'lazy' }}
+        radius="100%"
+        onClick={onClick}
+      />
+    );
   } else {
     return (
       <Avatar size={size} radius="100%" name={user.name} color="initials" onClick={onClick}>
