@@ -7,7 +7,7 @@ import { lobbyService } from '~/app/services/lobby.service';
 import { generateQRImage } from '~/app/usecases/generate-qr-image.usecase';
 import { LobbyModel, Permission } from '~/persistence';
 
-/** 👯‍♀️ Сценарий по работе с комнатами для сбора людей */
+/** 👯‍♀️ Сценарий по работе с расчётами для сбора людей */
 export function registerLobbyScenario(bot: TypedBot) {
   // ⬇️ Главный обработчик сценария: реагирует на команду /lobby
   bot.command('lobby', async (ctx, next) => {
@@ -32,7 +32,7 @@ export function registerLobbyScenario(bot: TypedBot) {
     await replyAfterLobbyCreated(ctx, lobby);
   });
 
-  // ⬇️ Обработчик на кнопку создать новую (удалить старую) комнату
+  // ⬇️ Обработчик на кнопку создать новый (удалить старый) расчёт
   bot.callbackQuery(newLobbyQuery.regex, async (ctx, next) => {
     // Запоминаем юзера, он нам понадобится дальше
     const user = await ctx.user();

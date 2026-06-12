@@ -364,7 +364,7 @@ class CheckService {
         });
       }
 
-      // Если была указана комната, то закрываем её
+      // Если был указан лобби расчёта, то закрываем его
       if (lobbyId) {
         await tx.lobby.update({
           where: { id: lobbyId },

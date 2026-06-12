@@ -10,7 +10,7 @@ import { formatLocaleDate } from '~/utils/formatters/format-locale-date';
 export function getLobbyJoinedMessage(lobby: LobbyModel) {
   return [
     dedent`
-      <b>✅ Ты присоединился</b> к комнате ${getMentionMarkup(lobby.user!, { format: true })}
+      <b>✅ Ты присоединился</b> к расчёту ${getMentionMarkup(lobby.user!, { format: true })}
 
       Как только появится чек, я сообщу тебе об этом 🤙
     `,
@@ -23,7 +23,7 @@ export function getLobbyJoinedMessage(lobby: LobbyModel) {
 export function getLobbyAlreadyClosedMessage(lobby: LobbyModel) {
   return [
     dedent`
-      🙅‍♀️ Эта комната уже закрыта. Вероятно, уже есть более новая...
+      🙅‍♀️ Этот расчёт уже закрыт. Вероятно, уже есть более новый...
 
       За подробностями обратись к ${getMentionMarkup(lobby.user!, { format: true })}
     `,
@@ -36,15 +36,15 @@ export function getLobbyAlreadyClosedMessage(lobby: LobbyModel) {
 export function getLobbyAlreadyExistsMessage(lobby: LobbyModel) {
   return [
     dedent`
-      🤔 У тебя уже есть комната от <b>${formatLocaleDate(lobby.createdAt)}</b>
+      🤔 У тебя уже есть расчёт от <b>${formatLocaleDate(lobby.createdAt)}</b>
 
-      Делаем с ней что-то, или создаём новую?
+      Делаем с ним что-то, или создаём новый?
     `,
     {
       parse_mode: 'HTML',
       reply_markup: InlineKeyboard.from([
         [InlineKeyboard.webApp('👀 Посмотреть что там', webLobbyUrl(lobby.id))],
-        [InlineKeyboard.text('🆕 Создать новую (удалить старую)', newLobbyQuery.with(lobby.id))],
+        [InlineKeyboard.text('🆕 Создать новый (удалить старый)', newLobbyQuery.with(lobby.id))],
         [InlineKeyboard.text('❌ Отмена (ничего не делать)', '-')]
       ])
     }
@@ -53,7 +53,7 @@ export function getLobbyAlreadyExistsMessage(lobby: LobbyModel) {
 
 export function getLobbyCreatedCaption(lobby: LobbyModel) {
   return dedent`
-      🔗 Ссылка на комнату ⬇️ Перейди по ней, чтобы присоединиться
+      🔗 Ссылка на расчёт ⬇️ Перейди по ней, чтобы присоединиться
 
       <b>${deepLinkUrl(`lobby_${lobby.id}`)}</b>
     `;
@@ -62,7 +62,7 @@ export function getLobbyCreatedCaption(lobby: LobbyModel) {
 export function getLobbyCreatedMessage() {
   return [
     dedent`
-      ⬆️ А теперь ждём пока все присоединятся к комнате
+      ⬆️ А теперь ждём пока все присоединятся к расчёту
 
       Как только у тебя будет чек, просто присылай сюда его фотку (QR код) или json
     `,

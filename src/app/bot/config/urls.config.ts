@@ -11,5 +11,5 @@ export const webUserUrl = (id: string) => `${process.env.WEB_PUBLIC_URL}/users/$
 // Ссылка на страницу чека
 export const webCheckUrl = (id: string) => `${process.env.WEB_PUBLIC_URL}/checks/${id}`;
 
-// Ссылка на страницу комнаты ожидания
+// Ссылка на страницу лобби расчёта
 export const webLobbyUrl = (id: string) => `${process.env.WEB_PUBLIC_URL}/lobby/${id}`;

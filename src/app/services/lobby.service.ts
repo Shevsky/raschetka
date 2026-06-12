@@ -2,7 +2,7 @@ import { prisma, Prisma } from '~/app/prisma';
 import { LobbyModel } from '~/persistence';
 
 class LobbyService {
-  /** Получить данные по комнате */
+  /** Получить данные по расчёту */
   async getLobby(id: string, and?: Array<Prisma.LobbyWhereInput>): Promise<LobbyModel> {
     return prisma.lobby.findUniqueOrThrow({
       where: { id, OR: and },
@@ -10,12 +10,12 @@ class LobbyService {
     });
   }
 
-  /** Получить данные по комнате, но только если есть доступ у указанного юзера */
+  /** Получить данные по расчёту, но только если есть доступ у указанного юзера */
   async getLobbyIfAvailable(id: string, userId: string): Promise<LobbyModel> {
     return this.getLobby(id, [{ userId }, { participants: { some: { userId } } }]);
   }
 
-  /** Найти открытую комнату ожидания пользователя */
+  /** Найти открытый расчёт для указанного пользователя */
   async getOpenedLobbyByUserId(userId: string): Promise<Nullish<LobbyModel>> {
     return prisma.lobby.findFirst({
       where: { userId, closed: false },
@@ -23,7 +23,7 @@ class LobbyService {
     });
   }
 
-  /** Присоединиться к комнате */
+  /** Присоединиться к расчёту */
   async joinToLobby(userId: string, lobbyId: string): Promise<void> {
     await prisma.lobbyParticipant.upsert({
       where: {
@@ -34,7 +34,7 @@ class LobbyService {
     });
   }
 
-  /** Создаёт комнату ожидания для сбора людей */
+  /** Создаёт расчёт для сбора людей */
   async createLobby(userId: string, userIdsAsParticipants: Array<string>, shouldClosePrevious: boolean = false): Promise<LobbyModel> {
     return prisma.$transaction(async (tx) => {
       if (shouldClosePrevious) {

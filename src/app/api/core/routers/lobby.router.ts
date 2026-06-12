@@ -4,7 +4,7 @@ import { protectedProcedure } from '~/app/api/core/procedures/protected.procedur
 import { lobbyService } from '~/app/services/lobby.service';
 
 export const lobbyRouter = t.router({
-  /** Получить данные по комнате */
+  /** Получить данные по лобби расчёта */
   getLobby: protectedProcedure
     .input(
       z.object({
@@ -14,7 +14,7 @@ export const lobbyRouter = t.router({
     .query(async ({ ctx, input }) => {
       return lobbyService.getLobbyIfAvailable(input.id, ctx.user.id);
     }),
-  /** Получить открытую комнату текущего пользователя */
+  /** Получить открытое лобби расчёта текущего пользователя */
   getCurrentUserOpenedLobby: protectedProcedure.query(async ({ ctx }) => {
     return lobbyService.getOpenedLobbyByUserId(ctx.user.id);
   })

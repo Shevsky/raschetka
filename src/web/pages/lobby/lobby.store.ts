@@ -6,7 +6,7 @@ import { trpc } from '~/web/config/trpc.config';
 export class LobbyStore {
   readonly #id: string;
 
-  /** Активная комната */
+  /** Активное лобби расчёта */
   @observable accessor lobby!: LobbyModel;
 
   constructor(id: string) {
