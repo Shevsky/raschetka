@@ -65,6 +65,9 @@ export function getLobbyCreatedMessage() {
       ⬆️ А теперь ждём пока все присоединятся к комнате
 
       Как только у тебя будет чек, просто присылай сюда его фотку (QR код) или json
-    `
+    `,
+    {
+      disable_notification: true
+    }
   ] satisfies TypedMessage;
 }
