@@ -9,7 +9,8 @@ import {
   requests
 } from '~/app/api/config/defaults.config';
 import { createContext } from '~/app/api/config/trpc.config';
-import { ApiRouter, apiRouter } from '~/app/api/core/routers/api.router';
+import { httpController } from '~/app/api/core/controllers/http.controller';
+import { TRPCRouter, trpcRouter } from '~/app/api/core/routers/trpc.router';
 
 export const server = fastify({
   maxParamLength: 5000,
@@ -25,10 +26,10 @@ registerDefaultRequestsStorage(server);
 
 // Регистрирует обработчик для всех запросов, чтобы делегировать их trpc
 server.register(fastifyTRPCPlugin, {
-  prefix: '/api',
+  prefix: '/api/trpc',
   useWSS: true,
   trpcOptions: {
-    router: apiRouter,
+    router: trpcRouter,
     createContext(options) {
       const realReq = requests.get(options.req.raw ?? options.req) ?? options.req;
 
@@ -40,8 +41,10 @@ server.register(fastifyTRPCPlugin, {
 
       console.error(`👻 Ошибка tRPC на '${path}' от пользователя ${user?.name} (id=${user?.id}, ip=${req.ip}):`, error);
     }
-  } satisfies FastifyTRPCPluginOptions<ApiRouter>['trpcOptions']
+  } satisfies FastifyTRPCPluginOptions<TRPCRouter>['trpcOptions']
 });
+
+server.register(httpController, { prefix: '/api/http' });
 
 // Подключаем плагин для статики
 server.register(fastifyStatic, {

@@ -12,6 +12,10 @@ export async function registerAvailableCommands(bot: TypedBot): Promise<void> {
       description: 'Начать работу с ботом'
     },
     {
+      command: 'lobby',
+      description: 'Создать лобби'
+    },
+    {
       command: 'invite',
       description: 'Получить пригласительную ссылку'
     },

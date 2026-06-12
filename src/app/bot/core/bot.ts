@@ -7,6 +7,7 @@ import { registerF2BScenario } from '~/app/bot/core/scenarios/f2b.scenario';
 import { registerFriendsScenario } from '~/app/bot/core/scenarios/friends.scenario';
 import { registerHelpScenario } from '~/app/bot/core/scenarios/help.scenario';
 import { registerInviteScenario } from '~/app/bot/core/scenarios/invite.scenario';
+import { registerLobbyScenario } from '~/app/bot/core/scenarios/lobby.scenario';
 import { registerLogsScenario } from '~/app/bot/core/scenarios/logs.scenario';
 import { registerMeScenario } from '~/app/bot/core/scenarios/me.scenario';
 import { registerStartScenario } from '~/app/bot/core/scenarios/start.scenario';
@@ -34,6 +35,7 @@ export async function prepareBot(): Promise<void> {
   registerHelpScenario(bot);
   registerInviteScenario(bot);
   registerMeScenario(bot);
+  registerLobbyScenario(bot);
   registerStartScenario(bot);
   registerUsersScenario(bot);
   registerLogsScenario(bot);

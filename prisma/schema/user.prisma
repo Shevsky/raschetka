@@ -1,27 +1,30 @@
 model User {
-  id                   String             @id @default(uuid())
-  name                 String
-  permissions          Permission[]
-  mention              String?
+  id                    String             @id @default(uuid())
+  name                  String
+  permissions           Permission[]
+  mention               String?
   // Дата регистрации пользователя
-  createdAt            DateTime           @default(now())
+  createdAt             DateTime           @default(now())
   // Привязанные внешние аккаунты
-  accounts             ExternalAccount[]
+  accounts              ExternalAccount[]
   // Пол (может отсутствовать если не смогли определить автоматически)
-  gender               Gender?
+  gender                Gender?
   // Информация о том кто пригласил пользователя в бот
-  inviterId            String?
-  inviter              User?              @relation("invitedUsers", fields: [inviterId], references: [id])
+  inviterId             String?
+  inviter               User?              @relation("invitedUsers", fields: [inviterId], references: [id])
   // И о том кого пригласил этот пользователь
-  invitedUsers         User[]             @relation("invitedUsers")
+  invitedUsers          User[]             @relation("invitedUsers")
   // Связи с другими пользователями-друзьями
-  friendshipsFrom      Friendship[]       @relation("fromUser")
-  friendshipsTo        Friendship[]       @relation("toUser")
+  friendshipsFrom       Friendship[]       @relation("fromUser")
+  friendshipsTo         Friendship[]       @relation("toUser")
   // Созданные чеки и участия в других чеках
-  checks               Check[]
-  checksParticipations CheckParticipant[]
+  checks                Check[]
+  checksParticipations  CheckParticipant[]
+  // Созданные лобби и участия в них
+  lobbies               Lobby[]
+  lobbiesParticipations LobbyParticipant[]
   // Очередь сообщений, которые должны быть отправлены этому пользователю
-  queuedMessages       QueuedMessage[]
+  queuedMessages        QueuedMessage[]
 }
 
 enum Gender {

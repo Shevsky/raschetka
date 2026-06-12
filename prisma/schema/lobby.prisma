@@ -1,0 +1,24 @@
+model Lobby {
+  id           String                        @id @default(uuid())
+  user         User                          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+  closed       Boolean                       @default(false)
+  // Даты создания и обновления лобби
+  createdAt    DateTime                      @default(now())
+  updatedAt    DateTime                      @updatedAt
+  // Связь с чеком
+  check        Check?                        @relation(fields: [checkId], references: [id], onDelete: SetNull)
+  checkId      String?                       @unique
+  // Участники в лобби
+  participants LobbyParticipant[]
+}
+
+model LobbyParticipant {
+  id     String           @id @default(uuid())
+  user   User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  lobby   Lobby @relation(fields: [lobbyId], references: [id], onDelete: Cascade)
+  lobbyId String
+
+  @@unique([userId, lobbyId], name: "single")
+}

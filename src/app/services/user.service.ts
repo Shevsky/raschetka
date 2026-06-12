@@ -131,6 +131,25 @@ class UserService {
     });
   }
 
+  /** Подружить пользователей */
+  async createFriendship(firstUserId: string, secondUserId: string): Promise<void> {
+    const [leftId, rightId] = [firstUserId, secondUserId].sort();
+
+    if (leftId === rightId) {
+      return;
+    }
+
+    if (
+      !(await prisma.friendship.findUnique({
+        where: { id: { fromUserId: leftId, toUserId: rightId } }
+      }))
+    ) {
+      await prisma.friendship.create({
+        data: { fromUserId: leftId, toUserId: rightId }
+      });
+    }
+  }
+
   /** Выдать или забрать какой-то пермишен для юзера */
   async toggleUserPermission(id: string, permission: Permission): Promise<boolean> {
     return prisma.$transaction(async (tx) => {

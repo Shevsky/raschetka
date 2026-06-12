@@ -43,6 +43,8 @@ model Check {
   participants         CheckParticipant[]
   // Отправленная коммуникация по созданному чеку
   sentCommunication    CheckSentCommunication?
+  // Связь с лобби
+  lobby                Lobby?
 
   @@unique([userId, fiscalDocumentNumber, fiscalDriveNumber, fiscalSign, kktRegId], name: "fiscal")
 }

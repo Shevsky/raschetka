@@ -10,6 +10,7 @@
     "prisma:generate": "prisma generate --no-hints",
     "prisma:copy-assets": "sh -lc 'find src/persistence/generated/client -type f ! -name \"*.ts\" -exec sh -c '\\''t=\"dist/app/persistence/generated/client/${1#src/persistence/generated/client/}\"; mkdir -p \"$(dirname \"$t\")\"; cp \"$1\" \"$t\"'\\'' _ {} \\;'",
     "prisma:migrate": "prisma migrate dev --skip-seed",
+    "prisma:reset": "prisma migrate reset --force",
     "prisma:force-reset": "prisma db push --force-reset --accept-data-loss && prisma db seed",
     "app:build": "tsc --noCheck --outDir dist/app && tsc-alias --dir dist/app --resolve-full-paths true && rimraf dist/app/web",
     "app:dev": "cross-env NODE_ENV=development tsx watch --clear-screen=false -r dotenv-flow/config src/app/index.ts",

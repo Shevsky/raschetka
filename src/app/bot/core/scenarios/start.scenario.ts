@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 import { match } from 'ts-pattern';
 import { getCheckAssignedMessage } from '~/app/bot/core/messages/checks.messages';
+import { getLobbyAlreadyClosedMessage, getLobbyJoinedMessage } from '~/app/bot/core/messages/lobby.messages';
 import { getInviteFromUserAcceptedMessage } from '~/app/bot/core/messages/users.messages';
 import { getWelcomeButRegisteredMessage, getWelcomeMessage } from '~/app/bot/core/messages/welcome.messages';
 import { TypedBot } from '~/app/bot/types/bot';
@@ -8,12 +9,14 @@ import { TypedMessage } from '~/app/bot/types/message';
 import { getStoragePathPair, StorageTarget } from '~/app/config/storage.config';
 import { Prisma } from '~/app/prisma';
 import { checkService } from '~/app/services/check.service';
+import { lobbyService } from '~/app/services/lobby.service';
 import { userService } from '~/app/services/user.service';
 import { detectGender } from '~/app/usecases/detect-gender.usecase';
 import { ExternalAccountProvider } from '~/persistence';
 
 enum StartCommandMatchAction {
   CHECK = 'check',
+  LOBBY = 'lobby',
   INVITE = 'invite'
 }
 
@@ -90,6 +93,21 @@ export function registerStartScenario(bot: TypedBot): void {
           const check = await checkService.getCheck(checkId);
 
           return getCheckAssignedMessage(check);
+        })
+        // 🤖 Команда /start lobby_{checkId} для присоединения к лобби
+        .with(StartCommandMatchAction.LOBBY, async () => {
+          const [lobbyId] = args;
+
+          const lobby = await lobbyService.getLobby(lobbyId);
+
+          if (lobby.closed) {
+            return getLobbyAlreadyClosedMessage(lobby);
+          } else {
+            await lobbyService.joinToLobby(user.id, lobbyId);
+            await userService.createFriendship(user.id, lobby.userId);
+
+            return getLobbyJoinedMessage(lobby);
+          }
         })
         // 🤖 Команда /start invite_{inviterId} для принятия приглашения на регистрацию в боте
         .with(StartCommandMatchAction.INVITE, async () => {

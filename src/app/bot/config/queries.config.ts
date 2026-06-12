@@ -28,5 +28,6 @@ export const {
   cancelCheckQuery,
   seeCreatedChecksQuery,
   seeAssignedChecksQuery,
+  newLobbyQuery,
   backToMeQuery
 } = identityProxy((id) => new QueryData(id));
