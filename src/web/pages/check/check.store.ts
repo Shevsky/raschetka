@@ -316,7 +316,9 @@ export class CheckStore {
           trpc.user.getUserFriends.query({ id: currentUser.id }),
           trpc.check.getCreatedChecks.query({ userId: currentUser.id, archived: true })
         ]);
-        this.pickedUserIdsAsParticipants = [currentUser.id];
+        this.pickedUserIdsAsParticipants = this.lobby
+          ? this.lobby.participants!.map((participant) => participant.userId)
+          : [currentUser.id];
 
         break;
       }

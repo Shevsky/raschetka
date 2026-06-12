@@ -18,7 +18,8 @@ class LobbyService {
   /** Найти открытую комнату ожидания пользователя */
   async getOpenedLobbyByUserId(userId: string): Promise<Nullish<LobbyModel>> {
     return prisma.lobby.findFirst({
-      where: { userId, closed: false }
+      where: { userId, closed: false },
+      include: { participants: true }
     });
   }
 
