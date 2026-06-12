@@ -71,7 +71,8 @@ export const checkRouter = t.router({
             itemIds: z.array(z.string()).min(1),
             userIds: z.array(z.string())
           })
-        )
+        ),
+        lobbyId: z.string().optional()
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -86,7 +87,8 @@ export const checkRouter = t.router({
         input.comment,
         input.tipsSum,
         input.userIdsAsParticipants,
-        input.itemGroups
+        input.itemGroups,
+        input.lobbyId
       );
     }),
   /** Заполнение чека (выбор своих товаров и... всё) */

@@ -318,7 +318,8 @@ class CheckService {
     comment: string,
     tipsSum: number,
     userIdsAsParticipants: Array<string>,
-    itemGroups: Array<{ name: string; itemIds: Array<string>; userIds: Array<string> }>
+    itemGroups: Array<{ name: string; itemIds: Array<string>; userIds: Array<string> }>,
+    lobbyId?: string
   ): Promise<void> {
     await prisma.$transaction(async (tx) => {
       // Обновляем базовые параметры чека
@@ -360,6 +361,14 @@ class CheckService {
             items: { connect: itemGroup.itemIds.map((itemId) => ({ id: itemId })) },
             participants: { connect: itemGroup.userIds.map((userIdForGroup) => ({ id: participants[userIdForGroup].id })) }
           }
+        });
+      }
+
+      // Если была указана комната, то закрываем её
+      if (lobbyId) {
+        await tx.lobby.update({
+          where: { id: lobbyId },
+          data: { checkId: id }
         });
       }
 

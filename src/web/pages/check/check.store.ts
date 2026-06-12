@@ -254,7 +254,8 @@ export class CheckStore {
               itemIds: this.specifiedCommonItemGroupItemIds
             }
           : null
-      ].filter(Boolean) satisfies Array<{ name: string; itemIds: Array<string>; userIds: Array<string> }>
+      ].filter(Boolean) satisfies Array<{ name: string; itemIds: Array<string>; userIds: Array<string> }>,
+      lobbyId: this.lobby?.id
     });
   };
 
