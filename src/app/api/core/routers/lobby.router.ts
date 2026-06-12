@@ -13,5 +13,9 @@ export const lobbyRouter = t.router({
     )
     .query(async ({ ctx, input }) => {
       return lobbyService.getLobbyIfAvailable(input.id, ctx.user.id);
-    })
+    }),
+  /** Получить открытую комнату текущего пользователя */
+  getCurrentUserOpenedLobby: protectedProcedure.query(async ({ ctx }) => {
+    return lobbyService.getOpenedLobbyByUserId(ctx.user.id);
+  })
 });

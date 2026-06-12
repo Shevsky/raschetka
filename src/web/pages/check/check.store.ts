@@ -1,7 +1,7 @@
 import { mutex } from 'decorio';
 import { action, computed, observable, runInAction } from 'mobx';
 import { Subscription } from 'rxjs';
-import { CheckItemGroupModel, CheckItemModel, CheckModel, CheckParticipantModel, CheckStatus, UserModel } from '~/persistence';
+import { CheckItemGroupModel, CheckItemModel, CheckModel, CheckParticipantModel, CheckStatus, LobbyModel, UserModel } from '~/persistence';
 import { CalculatedItemGroupValues, calculateItemGroupValues } from '~/utils/business/calculate-item-group-values';
 import { calculateParticipantItemsSum } from '~/utils/business/calculate-participant-items-sum';
 import { CalculatedTipsValues, calculateTipsValues } from '~/utils/business/calculate-tips-values';
@@ -28,6 +28,8 @@ export class CheckStore {
 
   /** Активный чек */
   @observable accessor check!: CheckModel;
+  /** Лобби (если было создано) */
+  @observable accessor lobby!: Nullish<LobbyModel>;
   /** Доступные для выбора товары (для режима выбора своих товаров) */
   @observable accessor selectableItemIds: Array<string> = [];
   /** Выбранные текущим участником чека товары (для режима выбора своих товаров) */
@@ -185,7 +187,10 @@ export class CheckStore {
 
   /** Инициализация */
   @mutex async init(): Promise<this> {
-    this.check = await trpc.check.getCheck.query({ id: this.#id });
+    [this.check, this.lobby] = await Promise.all([
+      trpc.check.getCheck.query({ id: this.#id }),
+      trpc.lobby.getCurrentUserOpenedLobby.query()
+    ]);
 
     await this.#handlePrepareWorkflow();
 
