@@ -9,7 +9,7 @@ export const QRSection = observer(() => {
 
   return (
     <div>
-      <img src={`/api/http/lobby/qr/${id}`} />
+      <img src={`/api/http/lobby/qr/${id}`} style={{ width: '100%', borderRadius: '25px' }} />
     </div>
   );
 });
