@@ -43,6 +43,7 @@ services:
         max-size: "20m"
         max-file: "5"
     volumes:
+      - ./.env:/app/.env:ro
       - ${STORAGE_PATH_ON_HOST}:${STORAGE_PATH}
       - fail2bandata:/var/lib/fail2ban
     depends_on:
