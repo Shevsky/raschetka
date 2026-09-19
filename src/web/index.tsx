@@ -44,6 +44,8 @@ try {
     </MantineProvider>
   );
 } catch (error) {
+  console.error(error);
+
   root.render(
     <MantineProvider {...mantineProviderProps}>
       <ErrorLayout error={error} onRetry={() => location.reload()} />
